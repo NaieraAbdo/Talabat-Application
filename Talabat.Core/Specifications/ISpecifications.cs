@@ -12,5 +12,15 @@ namespace Talabat.Core.Specifications
     {
         public Expression<Func<T,bool>> Criteria { get; set; }
         public List<Expression<Func<T,object>>> Includes { get; set; }
+
+        //Prop For OrderBy 
+        public Expression<Func<T,object>> OrderBy { get; set; }
+        public Expression<Func<T, object>> OrderByDesc { get; set; }
+
+        //Skip()
+        public int Skip { get; set; }
+        //Take()
+        public int Take { get; set; }
+        public bool IsPaginationEnabled { get; set; }
     }
 }

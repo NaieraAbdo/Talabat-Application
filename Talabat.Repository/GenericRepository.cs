@@ -21,18 +21,18 @@ namespace Talabat.Repository
         }
 
         #region Before Specification
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IReadOnlyList<T>> GetAllAsync()
         {
             if (typeof(T) == typeof(Product))
-                return (IEnumerable<T>)await dbContext.Set<Product>().Include(p => p.Brand).Include(p => p.Category).ToListAsync();
+                return (IReadOnlyList<T>)await dbContext.Set<Product>().Include(p => p.Brand).Include(p => p.Category).ToListAsync();
             return await dbContext.Set<T>().ToListAsync();
         }
 
-        
+
         public async Task<T?> GetAsync(int id)
         {
             if (typeof(T) == typeof(Product))
-                return await dbContext.Set<Product>().Where(p =>p.Id ==id).Include(p => p.Brand).Include(p => p.Category).FirstOrDefaultAsync() as T;
+                return await dbContext.Set<Product>().Where(p => p.Id == id).Include(p => p.Brand).Include(p => p.Category).FirstOrDefaultAsync() as T;
             return await dbContext.Set<T>().FindAsync(id);
         }
         #endregion
@@ -43,7 +43,7 @@ namespace Talabat.Repository
             return await ApplySpec(spec).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
+        public async Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
         {
             return await ApplySpec(spec).ToListAsync();
         }
@@ -51,6 +51,11 @@ namespace Talabat.Repository
         private  IQueryable<T> ApplySpec(ISpecifications<T> spec)
         {
             return  SpecificationsEvaluator<T>.GetQuery(dbContext.Set<T>(), spec);
+        }
+
+        public Task<int> GetCountWithSpecAsync(ISpecifications<T> spec)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }
