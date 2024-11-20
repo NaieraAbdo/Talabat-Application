@@ -28,6 +28,7 @@ namespace Talabat.APIs.Test1.Extensions
 
                 };
             });
+            services.AddScoped<IBasketRepository, BasketRepository>();
 
             return services;
         }

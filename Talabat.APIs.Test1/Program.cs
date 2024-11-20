@@ -1,14 +1,18 @@
- using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using Talabat.APIs.Test1.Errors;
 using Talabat.APIs.Test1.Extensions;
 using Talabat.APIs.Test1.Helper;
 using Talabat.APIs.Test1.MiddleWares;
+using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Repository;
 using Talabat.Repository.Data;
 using Talabat.Repository.Data.DataSeed;
+using Talabat.Repository.Identity;
 
 namespace Talabat.APIs.Test1
 {
@@ -36,6 +40,19 @@ namespace Talabat.APIs.Test1
                 );
 
             WebApplicationBuilder.Services.AddApplicationServices();
+            WebApplicationBuilder.Services.AddSingleton<IConnectionMultiplexer>(Options =>
+            {
+                var connection = WebApplicationBuilder.Configuration.GetConnectionString("RedisConnection");
+                return ConnectionMultiplexer.Connect(connection);
+            }
+            );
+
+            WebApplicationBuilder.Services.AddDbContext<AppIdentityDbContext>(Options =>
+            {
+                Options.UseSqlServer(WebApplicationBuilder.Configuration.GetConnectionString("IdentityConnection"));
+            });
+
+            WebApplicationBuilder.Services.AddIdentityServices(WebApplicationBuilder.Configuration);
 
             #endregion
 
@@ -50,7 +67,11 @@ namespace Talabat.APIs.Test1
             try
             {
                 await _dbContext.Database.MigrateAsync();  //Update Databases
+                var IdentityDbContext = services.GetRequiredService<AppIdentityDbContext>();
+                await IdentityDbContext.Database.MigrateAsync();
                 //Data Seeding
+                var userManager = services.GetRequiredService<UserManager<AppUser>>(); 
+                await AppIdentityDbContextSeed.SeedUserAsync(userManager);
                 await StoreContextSeed.SeedAsync(_dbContext);
             }
             catch (Exception ex)
@@ -68,16 +89,11 @@ namespace Talabat.APIs.Test1
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            app.UseStaticFiles();
-
-            app.UseStatusCodePagesWithRedirects("/errors/{0}");
-
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             #endregion
