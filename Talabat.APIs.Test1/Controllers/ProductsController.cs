@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Talabat.APIs.Test1.DTOs;
 using Talabat.APIs.Test1.Errors;
 using Talabat.APIs.Test1.Helper;
@@ -80,5 +81,7 @@ namespace Talabat.APIs.Test1.Controllers
             var Brands = await brandRepo.GetAllAsync();
             return Ok(Brands);
         }
+
+        
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Talabat.Repository.Identity.Migration
+namespace Talabat.Repository.Identity.Migrations
 {
     public partial class IdentityInitialCreate : Migration
     {

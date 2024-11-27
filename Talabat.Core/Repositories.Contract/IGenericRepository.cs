@@ -12,8 +12,10 @@ namespace Talabat.Core.Repositories.Contract
     public interface IGenericRepository<T> where T:BaseEntity
     {
         #region Before Specification design
-        Task<T?> GetAsync(int id);
+        Task<T?> GetByIdAsync(int id);
         Task<IReadOnlyList<T>> GetAllAsync();
+
+        Task Add(T item);
         #endregion
 
         #region With Specification design

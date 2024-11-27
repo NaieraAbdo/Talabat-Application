@@ -4,7 +4,7 @@
 
 namespace Talabat.Repository.Data.Migrations
 {
-    public partial class ProductModule : Migration
+    public partial class ProductModule :Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

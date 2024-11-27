@@ -14,6 +14,7 @@ namespace Talabat.Core.Entities.Identity
         public string City { get; set; }
         public string Street { get; set; }
         public string Country { get; set; }
-        public string AppUserId { get; set; }
+        public string AppUserId { get; set; }//FK
+        public AppUser User { get; set; }
     }
 }

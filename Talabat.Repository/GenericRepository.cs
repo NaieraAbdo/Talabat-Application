@@ -29,12 +29,14 @@ namespace Talabat.Repository
         }
 
 
-        public async Task<T?> GetAsync(int id)
+        public async Task<T?> GetByIdAsync(int id)
         {
             if (typeof(T) == typeof(Product))
                 return await dbContext.Set<Product>().Where(p => p.Id == id).Include(p => p.Brand).Include(p => p.Category).FirstOrDefaultAsync() as T;
             return await dbContext.Set<T>().FindAsync(id);
         }
+
+        
         #endregion
 
         #region After Specification
@@ -56,6 +58,11 @@ namespace Talabat.Repository
         public Task<int> GetCountWithSpecAsync(ISpecifications<T> spec)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task Add(T item)
+        {
+            await dbContext.Set<T>().AddAsync(item);
         }
         #endregion
     }
